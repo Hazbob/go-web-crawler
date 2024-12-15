@@ -1,6 +1,7 @@
-package main
+package tests
 
 import (
+	"github.com/Hazbob/go-web-crawler/src/components"
 	"strings"
 	"testing"
 )
@@ -38,7 +39,7 @@ func TestNormaliseUrl(t *testing.T) {
 
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			actual, err := NormaliseUrl(tc.inputURL)
+			actual, err := components.NormaliseUrl(tc.inputURL)
 			if err != nil && !strings.Contains(err.Error(), tc.expected) {
 				t.Errorf("Test %v - %s FAIL: expected URL: %v", i, tc.name, err)
 				return
