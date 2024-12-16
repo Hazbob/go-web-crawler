@@ -39,4 +39,6 @@ func main() {
 	cfg.Wg.Wait()
 
 	components.PrintReport(cfg.Pages, rawBaseURL)
+
+	return
 }

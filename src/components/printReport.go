@@ -1,6 +1,9 @@
 package components
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func PrintReport(pages map[string]int, baseUrl string) {
 	var formattedVisits []formattedVisit
@@ -19,10 +22,10 @@ func PrintReport(pages map[string]int, baseUrl string) {
 
 	fmt.Printf(`
 ======================
-Report For %s
+REPORT for %s
 ======================
 %s
-`, baseUrl, visitsLineByLine)
+`, strings.TrimSuffix(baseUrl, "/"), visitsLineByLine)
 }
 
 type formattedVisit struct {
