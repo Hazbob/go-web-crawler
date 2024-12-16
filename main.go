@@ -10,16 +10,27 @@ func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("no website provided")
 		return
-	} else if len(os.Args) > 2 {
+	}
+	if len(os.Args) > 2 {
 		fmt.Println("too many arguments provided")
 		return
 	}
-	scrapeUrl := os.Args[1]
-	fmt.Printf("starting crawl of: %s\n", scrapeUrl)
-	var pages = make(map[string]int)
-	components.CrawlPage(scrapeUrl, scrapeUrl, pages)
+	rawBaseURL := os.Args[1]
 
-	for normalizedURL, count := range pages {
+	const maxConcurrency = 3
+	cfg, err := components.Configure(rawBaseURL, maxConcurrency)
+	if err != nil {
+		fmt.Printf("Error - configure: %v", err)
+		return
+	}
+
+	fmt.Printf("starting crawl of: %s...\n", rawBaseURL)
+
+	cfg.Wg.Add(1)
+	go cfg.CrawlPage(rawBaseURL)
+	cfg.Wg.Wait()
+
+	for normalizedURL, count := range cfg.Pages {
 		fmt.Printf("%d - %s\n", count, normalizedURL)
 	}
 }

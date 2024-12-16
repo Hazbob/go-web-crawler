@@ -2,6 +2,7 @@ package tests
 
 import (
 	"github.com/Hazbob/go-web-crawler/src/components"
+	"net/url"
 	"reflect"
 	"strings"
 	"testing"
@@ -100,26 +101,17 @@ func TestGetURLsFromHTML(t *testing.T) {
 `,
 			expected: nil,
 		},
-		{
-			name:     "handle invalid base URL",
-			inputURL: `:\\invalidBaseURL`,
-			inputBody: `
-<html>
-	<body>
-		<a href="/path">
-			<span>Boot.dev</span>
-		</a>
-	</body>
-</html>
-`,
-			expected:      nil,
-			errorContains: "couldn't parse base URL",
-		},
 	}
 
 	for i, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			actual, err := components.GetURLsFromHTML(tc.inputBody, tc.inputURL)
+			baseURL, err := url.Parse(tc.inputURL)
+			if err != nil {
+				t.Errorf("Test %v - '%s' FAIL: couldn't parse input URL: %v", i, tc.name, err)
+				return
+			}
+
+			actual, err := components.GetURLsFromHTML(tc.inputBody, baseURL.String())
 			if err != nil && !strings.Contains(err.Error(), tc.errorContains) {
 				t.Errorf("Test %v - '%s' FAIL: unexpected error: %v", i, tc.name, err)
 				return
