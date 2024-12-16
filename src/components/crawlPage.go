@@ -12,6 +12,10 @@ func (cfg *Config) CrawlPage(rawCurrentURL string) {
 		cfg.Wg.Done()
 	}()
 
+	if cfg.pagesLen() >= cfg.MaxPages {
+		return
+	}
+
 	currentURL, err := url.Parse(rawCurrentURL)
 	if err != nil {
 		fmt.Printf("Error - crawlPage: couldn't parse URL '%s': %v\n", rawCurrentURL, err)

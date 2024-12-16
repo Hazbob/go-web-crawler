@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Hazbob/go-web-crawler/src/components"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -11,14 +12,21 @@ func main() {
 		fmt.Println("no website provided")
 		return
 	}
-	if len(os.Args) > 2 {
+	if len(os.Args) > 4 {
 		fmt.Println("too many arguments provided")
 		return
 	}
 	rawBaseURL := os.Args[1]
+	maxConcurrency, err := strconv.Atoi(os.Args[2])
+	if err != nil {
+		fmt.Println("error parsing max concurrency")
+	}
+	maxPages, err := strconv.Atoi(os.Args[3])
+	if err != nil {
+		fmt.Println("error parsing max pages")
+	}
 
-	const maxConcurrency = 3
-	cfg, err := components.Configure(rawBaseURL, maxConcurrency)
+	cfg, err := components.Configure(rawBaseURL, maxConcurrency, maxPages)
 	if err != nil {
 		fmt.Printf("Error - configure: %v", err)
 		return
@@ -33,4 +41,6 @@ func main() {
 	for normalizedURL, count := range cfg.Pages {
 		fmt.Printf("%d - %s\n", count, normalizedURL)
 	}
+
+	return
 }
